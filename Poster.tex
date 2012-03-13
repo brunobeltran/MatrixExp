@@ -1,0 +1,250 @@
+\documentclass[landscape, a0]{sciposter}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage{color}
+%\usepackage{fancybullets}
+%\usepackage{other packages you may want to use}
+
+%\definecolor{BoxCol}{cmyk}{0.9,0.9,0.9}
+% uncomment for grey background to \section boxes 
+% for use with default option boxedsections
+
+\definecolor{mainCol}{rgb}{1,1,1}
+\definecolor{BoxCol}{rgb}{0.9,0.9,1}
+\definecolor{TextCol}{rgb}{0,0,0.6}
+\definecolor{SectionCol}{rgb}{0,0,0.6}
+\definecolor{ShadeCol}{rgb}{.9,.95,.9}
+\definecolor{lightpurple}{rgb}{.9,.9,1}
+\definecolor{navy}{rgb}{0,0,0.6}     
+\definecolor{blue}{rgb}{0,0,.9}
+
+%\definecolor{BoxCol}{rgb}{0.9,0.9,1}
+% uncomment for light blue background to \section boxes 
+% for use with default option boxedsections
+
+%\definecolor{SectionCol}{rgb}{0,0,0.5}
+% uncomment for dark blue \section text 
+
+
+\title{Numerical Matrix Exponentiation for Large Matrices}
+
+% Note: only give author names, not institute
+\author{Bruno Beltran, Avery St. Dizier, Morgan Matchett, Tyler Wales}
+ 
+% insert correct institute name
+\institute{Department of Mathematics \\
+             Louisiana State University }
+
+\email{bbeltr1@lsu.edu, astdiz1@lsu.edu, mmatch1@lsu.edu, twales2@lsu.edu}  % shows author email address below institute
+
+%\date is unused by the current \maketitle
+
+% The following commands can be used to alter the default logo settings
+%\leftlogo[0.6]{LSUlogo1}  % defines logo to left of title (with scale factor)
+%\rightlogo[0.9]{nsf2}  % same but on right
+% NOTE: the logo image files chenille.png, resp. otherlogo.png must be 
+%       present in the same directory as this LaTeX source, either
+%       in the .png format, or in any other supported format
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Notes:
+% Use an example matrix/real life problem
+% Make it so that an undergraduate can understand
+% Take some language from "19 Dubious Ways"
+
+\begin{document}
+%*** facultative: where the poster was presented (appears as a left footer):
+  \conference{Summer Undergraduate Research Forum, 2011, Baton Rouge, LA}
+
+
+%*** print the poster header defined above: title, authors, affiliations:
+  \fbox{\colorbox{lightpurple}{\maketitle}}
+\\
+\\
+\\
+%*** multi-columns environement, change {3} --> {2} if only 2 colums desired:
+  \begin{multicols}{4}
+
+%*** text of the Abstract/Introduction:
+  \section*{\textsc{Introduction}}
+\begin{itemize}
+      \item Systems of linear ordinary differential equations are pervasive throughout the engineering disciplines and the sciences.  The solution to these systems, $e^{tA}$, or the matrix exponential, can be solved for and approximated using a variety of methods.  Our research investigated the use of 
+     \item A nice little section on the results of the calculations will go here, however, Bruno needs more time to get the best results so in the meantime he put a long section of text here which really doesn't say much as far as Mathematics goes in order to take up the appropriate amount of space.
+% Honestly you should give [Bruno] more time to test, I haven't touched the exponentiator since last semester
+\end{itemize}
+%
+%
+%*** text of the first Section:
+\section{\textsc{Background}}
+%
+  \subsubsection*{\textcolor{navy}{An Easy Problem} }
+    \begin{itemize}
+      \item Consider the following variation on the canonical heat dissipation problem often presented in an introductory Differential Equations class. 
+ 	\\insert pic here
+	\\The temperature of the system can be modelled using Newton's law of heating and cooling as
+        \begin{align*}
+          \frac{dT_1}{dt} &= a(T_2-T_1) + b(T_{e_1}-T_1)\\
+          \frac{dT_2}{dt} &= c(T_1-T_2) + d(T_{e_2}-T_2)\\
+        \end{align*}
+        where $a,b,c,d$ are constants, and $T_{1}, T_2,T_{e_i}$ are the temperatures of their respective regions. If $T_e = 0$ (the homogenous case,) then the classical way to solve these equations involves rearranging them to get
+        \begin{align*}
+          \frac{dT_1}{dt} &= -(a+b)T_1+aT_2\\
+          \frac{dT_2}{dt} &= cT_1-(c+d)T_2\\
+        \end{align*}
+which can simply be written as a matrix product $$A\left(\begin{array}{c}T_1\\T_2\end{array}\right) = \left(\begin{array}{c}T_1^\prime\\T_2^\prime\end{array}\right) $$ In order to see the way in which the classical method lacks generalizability for larger matrices, let us solve a particular system, $A = \left( \begin{array}{cc} -3 & 4 \\ -1 & 1 \end{array} \right)$. 
+        
+    \end{itemize}
+    
+%
+%*** text of the second Section:
+  \section{\textsc{Retarded and Neutral Equations}}
+      \begin{itemize}
+    \item To approximate the solutions of (DDE) we use new numerical methods for the inversion of the Laplace transform as described in [1]. The solution $u(t)$ of (DDE) can be approximated by a function $u_a(t)$ given by the Laplace Transform inversion formula
+\begin{align}    
+u_{a}(t)=\frac{B_{0}}{t}\hat{u}\left(\frac{\lambda_{0}}{t}\right)+ 
+\frac{B_{1}}{t} \hat{u}\left(\frac{\lambda_{1}}{t}\right)+\cdots+\frac{B_{q}}{t}
+\hat{u}\left(\frac{\lambda_{q}}{t}\right), \tag{*}
+\end{align}
+where the constants $B_0, \dots, B_q$ and $\lambda_0, \dots, \lambda_q$ are uniquely determined by the partial fraction decomposition of the subdiagonal rational Pad\'e-approximation $r(z)  = \frac{P(z)}{Q(z)}$ of the exponential; i.e., $r(z)$ is a rational function of the form
+\begin{align*}
+r(z)= \frac{P(z)}{Q(z)} = \frac{B_0}{\lambda_0 - z} + \cdots + \frac{B_q}{\lambda_q - z}, \hbox{ where} 
+\end{align*}
+$$ P(z)=\sum_{j=0}^{q-1}\frac{(m-j)!(q-1)!}{m!j!(q-1-j)!}z^j
+\hbox{ and } Q(z)=\sum_{j=0}^q\frac{(m-j)!q!}{m!j!(q-j)!}(-z)^j.$$
+%
+    \item To check the numerical accuracy of the approximation method, we study a DDE that can be solved explicitly and compare the true solution with its approximation. One of the few first-order DDEs that can be solved explicitly is the ``greedy bank'' problem
+    \begin{align} 
+    u'(t)&- ru(t-1)=0\mbox{ with}\;\; u(t)=1\; \mbox{for} \; t\in[-1,0]. \tag{GB}
+    \end{align}
+    (see below for an explanation of the problem). For $r=1$, the solution is
+    $u(t) = t+1$ on the interval $[0,1]$, $u(t)= (\frac{t^{2}}{2}+\frac{3}{2})$ on $[1,2]$, and, more generally,
+\begin{align*}
+u(t)&=\sum_{n=0}^{N}\left[1+ \sum_{j=0}^{n}\frac{(t-j)^{j+1}}{(j+1)!}X_{[n,n+1]}(t)\right]\mbox{,} 
+\end{align*}    
+where $X_{[n,n+1]}$ is the characteristic function of the interval $[n,n+1]$.
+
+ \begin{figure} [H]
+\centering
+\subfigure[$u_{a}(t)$] % caption for subfigure a
+{
+   \label{fig3: $u_{a}(t)$}
+%   \scalebox{.55}{\includegraphics{GBapprox.png}}
+}
+\hspace{.3cm}
+\subfigure[$Error=u_{a}(t)-u(t)$] % caption for subfigure b
+{
+   \label{fig3: $Error=u_{a}(t)-u(t)$}
+%   \scalebox{.55}{\includegraphics{ErrorGB.png}}
+}
+\end{figure}
+\end{itemize}
+\subsubsection*{\textcolor{navy}{The Greedy Bank Problem(GB)}}
+\begin{itemize}
+ \item The delay equation (GB) models an investment plan in which a bank continuously compounds interest at an annual interest rate $r$ on the amount of what the account had in it a year ago (and works with the withhold interest for one year for its own greed). If $r$ is compounded n-times per year on the amount of what the account had in it a year ago, then the discrete version of (GB) is
+ \begin{align*}
+ u_{t+\frac{1}{n}}=u_{t}+\frac{r}{n}u_{t-1}\mbox{.} 
+ \end{align*}
+If one sets $t=\frac{j}{n}$ and defines $a_j := u_{\frac{j}{n}}$, then this becomes
+ \begin{align} 
+  a_{j+1} = a_j + \frac{r}{n}a_{j-n}, \tag{DE}
+ \end{align}
+ where the initial values $a_0,\dots, a_n$ are given. Thus, we expect that the solutions of (GE) can be approximated by solutions of (DE) for $n$ sufficiently large. 
+  \begin{figure}[H]
+        \begin{center}
+%        \scalebox{.40}{\includegraphics{DisToCont.png}}
+        {\small\caption{{\textcolor{blue}{Discrete}} $\rightarrow$ {\textcolor{red}{Continuous}}}}
+        \end{center}
+    \end{figure}
+  \item After having established that there are a variety of ways that we can approximate the solutions of retarded DDEs like (GB), we now turn to our main research issue, namely the investigation of advanced DDEs. First we show that advanced DDEs appear when one considers ``backward-in-time'' problems for retarded DDEs. 
+  
+ \subsubsection*{\textcolor{navy}{Retarded Backwards Equals Advanced Forward}}
+ \item 
+ The problem we are considering is as follows. Let us assume that we know that a system is governed by a retarded DDE of the form $$a_{0}u'(t)+b_{0}u(t)+b_{1}u(t-\omega)= f(t)$$ and that we can observe the solution $u(t)$ for $t\in [T, T+\omega]$. The question is then what we can say about the (unknown) initial function $u(t)=g(t)$ for $t\in [-\omega,0]$. To solve this problem, we set $v(t):=u(T-t)$ and the problem becomes to compute $v(t)$ for $t\in [T, T+\omega]$. To do so, an easy computation shows that $v(t)$ satisfies the advanced DDE 
+\begin{align}
+-a_{0}v'(t-\omega)+b_{1}v(t)+b_{0}v(t-\omega) = \tilde{f}(t), \tag{**}
+\end{align} where $\tilde{f}(t) := f(T-t+\omega)$ and $v(t)=u(T-\omega)$ is given for $t\in[-\omega,0]$.
+ \end{itemize}
+%
+ \subsubsection*{\textcolor{navy}{Uniqueness}}
+\begin{itemize}
+ \item Using finite Laplace transform methods and a well known uniqueness theorem of Laplace transform theory, we can show that the solutions of advanced DDEs of the form (**) are unique. This seems to be a new result. As we will see next, the real problem with advanced DDEs of the form (**) lies within the existence and computability of the solutions.
+ \end{itemize}
+%
+\subsubsection*{\textcolor{navy}{The Backwards Greedy Bank Problem}}
+\begin{itemize}
+ \item If one applies (**) to the greedy bank problem $u'(t) - ru(t-1)=0$, then the corresponding backward-in-time problem is the advanced DDE
+     \begin{align} 
+         v'(t-1)+ rv(t) = 0, \tag{BGB}
+         \end{align}
+    where $v(t)=u(T-t)$ is given for $t\in[-1,0]$ by a solution $u(t)$ of the greedy bank problem for $t\in [T,T+1]$.     
+      \item Since the greedy bank problem is a limit of the difference equations (DE), we are now investigating the ``backward-in-time'' versions of (DE) by setting $b_j := a_{N-j}$, where $a_j$ solves (DE). It is easy to see that the sequence $b_j$ satisfies the difference equation
+ \begin{align}
+         b_{j+1}=\frac{n}{r}[-b_{j+1-n}-b_{j-n}], \tag{BDE}
+         \end{align}
+         where the initial data is given by $b_j = a_{N-j}$ for $0\le j\le n$. As we will see below, solving a (BDE) for a given solution $a_j$ of a (DE) seems to be ``as hard'' as solving the advanced DDE corresponding to a solution of a retarded DDE.
+  \end{itemize}
+
+\begin{figure} [H]
+
+\subfigure[{\small Given [0,1]} ] % caption for subfigure a
+{
+   \label{fig4:a}
+%   \scalebox{.37}{\includegraphics{[0,1].png}}
+}
+\hspace{.1cm}
+\subfigure[{\small Given [2,3]} ] % caption for subfigure b
+{
+   \label{fig4:b}
+%   \scalebox{.51}{\includegraphics{[2,3].png}}
+} 
+\hspace{.1cm}
+\subfigure[{\small Given [4,5]}]
+{
+    \label{fig4:c}
+%    \scalebox{.50}{\includegraphics{[4,5].png}}
+}
+\hspace{.1cm}
+\subfigure[{\small Given [6,7]}]
+{
+    \label{fig4:d}
+%    \scalebox{.45}{\includegraphics{[6,7].png}}
+}    
+\end{figure} 
+
+%
+\section*{\textsc{Conclusion}}
+    In our research we made first steps towards understanding the fundamental problems that come with solving ``backward-in-time'' problems associated with linear first order differential-difference equations or higher order linear difference equations. Although the problems are perfectly well-posed if one goes forward in time (i.e., solutions can be computed and depend continuously on the initial values), just the opposite is true if one attempts to go backwards in time. Our research shows that the computed solutions $v(t)$ of (BGB) and $b_j$ of (BDE) are entirely nontrustworthy. As a next step, we will try to regularize these inverse problems. That is, we will now search for functions $k(t)$ or sequences $k_j$ such that the quantities $(k*v)(t) := \int_0^t k(t-s)v(s)\, ds$ and $(k*b)_j := \sum_{i=0}^j k_{j-i}b_i$ are more easily computable and depend continuously on the initial data.
+
+\section*{\textsc{Future Work}}
+\begin{itemize}
+     \item In the future, we will investigate the use of this method in the inversion of the Laplace Transform; namely, that
+$$e^{tA}=\sum_{i=1}^q \frac{B_{i}}{t}R\left(\frac{\lambda_{i}}{t},A\right)=\sum_{k=0}^{n-1} \mathcal{L}^{-1}\left(\frac{\lambda^{n-k-1}}{c\left(\lambda\right)}\right)A_{k},$$
+where $c\left(\lambda\right)$ is the characteristic polynomial.
+\end{itemize}
+
+\section*{\textsc{\small{References \& Acknowledgments}}}
+{\small\subsubsection*{\textcolor{navy}{References}}
+\begin{enumerate}
+    \item 
+    \item 
+\end{enumerate}
+\subsubsection*{\textcolor{navy}{Acknowledgments}}
+\begin{enumerate}
+    \item Frank Neubrander, Ph.D., LSU Professor of Mathematics 
+    \item Austin Scirratt, Graduate Student of Mathematics, LSU
+\end{enumerate}}
+  
+  \end{multicols}
+
+%*** bibliograohy: here outsize the {multicols} environement --> a footer
+  %\begin{thebibliography}{m}
+   % \bibitem{areference}
+    %  An.~Author: {\em This article's title},  journal, pages.
+  %\end{thebibliography}
+
+\end{document}
